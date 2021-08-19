@@ -1,29 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-
+import React, { useState } from 'react';
 import axios from 'axios';
+import { Link, useHistory } from 'react-router-dom';
 
-const EditMovieForm = (props) => {
-	const { push } = useHistory();
-	const { id } = useParams()
+function AddMovieForm(props) {
+    const { push } = useHistory();
 
-	useEffect(() => {
-		console.log(id);
-		axios.get(`http://localhost:5000/api/movies/${id}`)
-			.then((res) => setMovie(res.data))
-			.catch((err) => console.log(err))
-	},[])
-
-	const [movie, setMovie] = useState({
+    const [movie, setMovie] = useState({
 		title:"",
 		director: "",
 		genre: "",
 		metascore: 0,
 		description: ""
-	});
-	
-	const handleChange = (e) => {
+	})
+
+    const handleChange = (e) => {
         setMovie({
             ...movie,
             [e.target.name]: e.target.value
@@ -31,18 +21,18 @@ const EditMovieForm = (props) => {
     }
 
     const handleSubmit = (e) => {
-		e.preventDefault();
-		axios.put(`http://localhost:5000/api/movies/${id}`, movie)
-			.then((res) => props.setMovies(res.data))
-			.catch((err) => console.log(err))
+        e.preventDefault();
+        axios.post('http://localhost:5000/api/movies', movie)
+        .then((res) => props.setMovies(res.data))
+        .catch((err) => console.log(err))
 
-		push(`/movies/${id}`);
-	}
-	
-	const { title, director, genre, metascore, description } = movie;
+        push('/movies');
+    }
+
+    const { title, director, genre, metascore, description } = movie;
 
     return (
-	<div className="col">
+        <div className="col">
 		<div className="modal-content">
 			<form onSubmit={handleSubmit}>
 				<div className="modal-header">						
@@ -77,7 +67,8 @@ const EditMovieForm = (props) => {
 				</div>
 			</form>
 		</div>
-	</div>);
+	</div>
+    )
 }
 
-export default EditMovieForm;
+export default AddMovieForm;
